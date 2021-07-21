@@ -4,6 +4,18 @@
     "paths": {
       "@App/*": [
         "src/*"
+      ],
+      "@Styles/*": [
+        "src/styles/*"
+      ],
+      "@Components/*": [
+        "src/components/*"
+      ],
+      "@Store/*": [
+        "src/store/*"
+      ],
+      "@Tools/*": [
+        "src/tools/*"
       ]
     }
   }
