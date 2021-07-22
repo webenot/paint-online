@@ -20,14 +20,35 @@ export const Canvas: FC = observer((): ReactElement => {
   const params: any = useParams();
 
   useEffect(() => {
-    canvasState.setCanvas(canvasRef.current);
-    toolState.setTool(new Brush(canvasRef.current, canvasState.socketClient, canvasState.id));
+    if (canvasState.socketClient) {
+      canvasState.setCanvas(canvasRef.current);
+      toolState.setTool(new Brush(canvasRef.current, canvasState.socketClient, params.id));
+      fetch(
+        `${process.env.REACT_APP_SERVER_URL}/image?id=${params.id}`,
+      )
+        .then((response: Response) => response.json())
+        .then((result: { img: string }) => {
+          const image = new Image();
+          image.src = result.img;
+          image.onload = () => {
+            const ctx = canvasRef.current.getContext('2d');
+            ctx?.clearRect(
+              0, 0, canvasRef.current.width, canvasRef.current.height,
+            );
+            ctx?.drawImage(
+              image, 0, 0, canvasRef.current.width, canvasRef.current.height,
+            );
+          };
+        });
+    }
   }, [ canvasState.socketClient ]);
 
   useEffect(() => {
-    canvasState.setSocketClient(
-      new WebSocketClient(canvasState.username, process.env.REACT_APP_WS_URL as string, params.id),
-    );
+    if (canvasState.username) {
+      canvasState.setSocketClient(
+        new WebSocketClient(canvasState.username, process.env.REACT_APP_WS_URL || '', params.id),
+      );
+    }
   }, [ canvasState.username ]);
 
   const connectionHandler = useCallback(() => {
@@ -38,7 +59,18 @@ export const Canvas: FC = observer((): ReactElement => {
   const handleClose = () => setModal(false);
 
   const saveActionHandler = useCallback(() => {
-    canvasState.pushToUndo(canvasRef.current.toDataURL());
+    const dataUrl = canvasRef.current.toDataURL();
+    canvasState.pushToUndo(dataUrl);
+    fetch(
+      `${process.env.REACT_APP_SERVER_URL}/image?id=${params.id}`,
+      {
+        body: JSON.stringify({ img: dataUrl }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        redirect: 'follow',
+        cache: 'no-cache',
+      },
+    );
   }, []);
 
   return (
@@ -47,7 +79,7 @@ export const Canvas: FC = observer((): ReactElement => {
         ref={canvasRef}
         width={600}
         height={480}
-        onMouseDown={saveActionHandler}
+        onMouseUp={saveActionHandler}
       />
       <Modal show={modal} onHide={handleClose}>
         <Modal.Header>
