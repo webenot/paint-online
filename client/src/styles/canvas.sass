@@ -1,10 +1,12 @@
 @import "variables"
 
 .canvas
-  height: 100vh
+  min-height: 100vh
   display: flex
   justify-content: center
   align-items: center
+  padding-top: calc(#{$toolbar-height} * 2 + 1rem)
+  padding-bottom: 1rem
   canvas
     background-color: white
     border: 1px solid black
