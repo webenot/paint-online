@@ -21,11 +21,13 @@ export const Canvas: FC = observer((): ReactElement => {
 
   useEffect(() => {
     canvasState.setCanvas(canvasRef.current);
-    toolState.setTool(new Brush(canvasRef.current));
-  }, []);
+    toolState.setTool(new Brush(canvasRef.current, canvasState.socketClient, canvasState.id));
+  }, [ canvasState.socketClient ]);
 
   useEffect(() => {
-    new WebSocketClient(canvasState.username, process.env.REACT_APP_WS_URL as string, params.id);
+    canvasState.setSocketClient(
+      new WebSocketClient(canvasState.username, process.env.REACT_APP_WS_URL as string, params.id),
+    );
   }, [ canvasState.username ]);
 
   const connectionHandler = useCallback(() => {

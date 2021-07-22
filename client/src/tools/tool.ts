@@ -1,11 +1,18 @@
+import { WebSocketClient } from '@App/ws';
+
 export class Tool {
 
   canvas: HTMLCanvasElement | null;
   ctx: CanvasRenderingContext2D;
 
-  constructor (canvas: HTMLCanvasElement | null) {
+  socketClient: WebSocketClient | null = null;
+  id: string;
+
+  constructor (canvas: HTMLCanvasElement | null, socketClient: WebSocketClient | null, id: string) {
     this.canvas = canvas;
     this.ctx = canvas?.getContext('2d') as CanvasRenderingContext2D;
+    this.socketClient = socketClient;
+    this.id = id;
     this.destroyEvents();
   }
 

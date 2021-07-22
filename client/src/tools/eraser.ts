@@ -1,10 +1,12 @@
 import { Tool } from '@Tools/tool';
+import { WebSocketClient } from '@App/ws';
 
 export class Eraser extends Tool {
 
   mouseDown = false;
-  constructor (canvas: HTMLCanvasElement | null) {
-    super(canvas);
+
+  constructor (canvas: HTMLCanvasElement | null, socketClient: WebSocketClient | null, id: string) {
+    super(canvas, socketClient, id);
     this.listen();
   }
 
@@ -18,6 +20,10 @@ export class Eraser extends Tool {
 
   mouseUpHandler () {
     this.mouseDown = false;
+    this.socketClient?.send({
+      method: 'draw',
+      figure: { type: 'finish' },
+    });
   }
 
   mouseDownHandler (e: MouseEvent) {
@@ -31,17 +37,23 @@ export class Eraser extends Tool {
 
   mouseMoveHandler (e: MouseEvent) {
     if (this.mouseDown) {
-      this.draw(
-        e.pageX - (e.target as HTMLElement).offsetLeft,
-        e.pageY - (e.target as HTMLElement).offsetTop,
-      );
+      this.socketClient?.send({
+        method: 'draw',
+        figure: {
+          type: 'erase',
+          x: e.pageX - (e.target as HTMLElement).offsetLeft,
+          y: e.pageY - (e.target as HTMLElement).offsetTop,
+        },
+      });
     }
   }
 
-  draw (x: number, y: number) {
-    this.ctx.lineTo(x, y);
-    this.ctx.strokeStyle = 'white';
-    this.ctx.stroke();
+  static draw (ctx: CanvasRenderingContext2D, x: number, y: number) {
+    ctx.save();
+    ctx.lineTo(x, y);
+    ctx.strokeStyle = 'white';
+    ctx.stroke();
+    ctx.restore();
   }
 
 }

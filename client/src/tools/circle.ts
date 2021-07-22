@@ -1,14 +1,16 @@
 import { Tool } from '@Tools/tool';
+import { TFigure, WebSocketClient } from '@App/ws';
 
 export class Circle extends Tool {
 
   mouseDown = false;
   startX = 0;
   startY = 0;
+  radius = 0;
   saved: string | undefined;
 
-  constructor (canvas: HTMLCanvasElement | null) {
-    super(canvas);
+  constructor (canvas: HTMLCanvasElement | null, socketClient: WebSocketClient | null, id: string) {
+    super(canvas, socketClient, id);
     this.listen();
   }
 
@@ -22,6 +24,18 @@ export class Circle extends Tool {
 
   mouseUpHandler () {
     this.mouseDown = false;
+
+    this.socketClient?.send({
+      method: 'draw',
+      figure: {
+        type: 'circle',
+        x: this.startX,
+        y: this.startY,
+        radius: this.radius,
+        fill: this.ctx.fillStyle,
+        stroke: this.ctx.strokeStyle,
+      },
+    });
   }
 
   mouseDownHandler (e: MouseEvent) {
@@ -42,11 +56,11 @@ export class Circle extends Tool {
       const currentY = e.pageY - (e.target as HTMLElement).offsetTop;
       const width = currentX - this.startX;
       const height = currentY - this.startY;
-      const radius = Math.pow(width * width + height * height, 0.5);
+      this.radius = Math.pow(width * width + height * height, 0.5);
       this.draw(
         this.startX,
         this.startY,
-        radius,
+        this.radius,
       );
     }
   }
@@ -63,6 +77,15 @@ export class Circle extends Tool {
         this.ctx.stroke();
       };
     }
+  }
+
+  static staticDraw (ctx: CanvasRenderingContext2D, figure: TFigure) {
+    ctx.save();
+    ctx.strokeStyle = figure.stroke || 'black';
+    ctx.beginPath();
+    ctx.arc(figure.x || 0, figure.y || 0, figure.radius || 0, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.restore();
   }
 
 }
