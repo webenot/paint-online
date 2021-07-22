@@ -18,7 +18,7 @@ type TProps = {
 export const Toolbar: FC<TProps> = (): ReactElement => {
 
   const selectToolHandler = useCallback((toolClass: TToolClass) => () => {
-    toolState.setTool(new toolClass(canvasState.canvas));
+    toolState.setTool(new toolClass(canvasState.canvas, canvasState.socketClient, canvasState.id));
   }, []);
 
   const selectColorHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {

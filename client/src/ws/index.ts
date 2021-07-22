@@ -1,4 +1,27 @@
 import canvasState from '@Store/canvasState';
+import { Brush } from '@Tools/brush';
+import { Rectangle } from '@Tools/rectangle';
+import { Circle } from '@Tools/circle';
+import { Line } from '@Tools/line';
+import { Eraser } from '@Tools/eraser';
+
+export type TFigure = {
+  type: string;
+  x?: number;
+  y?: number;
+  radius?: number;
+  width?: number;
+  height?: number;
+  endX?: number;
+  endY?: number;
+}
+
+export type TWSMessage = {
+  method: string;
+  id?: string;
+  username?: string;
+  figure: TFigure;
+}
 
 export class WebSocketClient {
 
@@ -39,8 +62,14 @@ export class WebSocketClient {
 
   onSocketMessage (msg: MessageEvent) {
     try {
-      const message = JSON.parse(msg.data);
-      console.log(message);
+      const message: TWSMessage = JSON.parse(msg.data);
+      switch (message.method) {
+        case 'connection':
+          console.log(`User ${message.username} is connected to server`);
+          break;
+        case 'draw':
+          this.drawHandler(message);
+      }
     } catch (e) {
       console.log(msg.data);
     }
@@ -53,5 +82,51 @@ export class WebSocketClient {
 
   onSocketClose () {
     console.log('ws closed');
+  }
+
+  drawHandler (msg: TWSMessage) {
+    const figure = msg.figure;
+    const ctx = canvasState.canvas?.getContext('2d');
+    if (ctx) {
+      switch (figure.type) {
+        case 'brush':
+          Brush.draw(ctx, figure.x || 0, figure.y || 0);
+          break;
+        case 'erase':
+          Eraser.draw(ctx, figure.x || 0, figure.y || 0);
+          break;
+        case 'rect':
+          Rectangle.staticDraw(ctx, figure);
+          this.send({
+            method: 'draw',
+            figure: { type: 'finish' },
+          });
+          break;
+        case 'circle':
+          Circle.staticDraw(ctx, figure);
+          this.send({
+            method: 'draw',
+            figure: { type: 'finish' },
+          });
+          break;
+        case 'line':
+          Line.staticDraw(ctx, figure);
+          this.send({
+            method: 'draw',
+            figure: { type: 'finish' },
+          });
+          break;
+        case 'finish':
+          ctx.beginPath();
+          break;
+      }
+    }
+  }
+
+  send (msg: TWSMessage) {
+    this.socket?.send(JSON.stringify(Object.assign({
+      id: this.id,
+      username: this.username,
+    }, msg)));
   }
 }

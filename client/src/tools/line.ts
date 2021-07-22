@@ -1,4 +1,5 @@
 import { Tool } from '@Tools/tool';
+import { TFigure, WebSocketClient } from '@App/ws';
 
 export class Line extends Tool {
 
@@ -6,9 +7,11 @@ export class Line extends Tool {
   saved: string | undefined;
   startX = 0;
   startY = 0;
+  currentX = 0;
+  currentY = 0;
 
-  constructor (canvas: HTMLCanvasElement | null) {
-    super(canvas);
+  constructor (canvas: HTMLCanvasElement | null, socketClient: WebSocketClient | null, id: string) {
+    super(canvas, socketClient, id);
     this.listen();
   }
 
@@ -22,6 +25,17 @@ export class Line extends Tool {
 
   mouseUpHandler () {
     this.mouseDown = false;
+
+    this.socketClient?.send({
+      method: 'draw',
+      figure: {
+        type: 'line',
+        x: this.startX,
+        y: this.startY,
+        endX: this.currentX,
+        endY: this.currentY,
+      },
+    });
   }
 
   mouseDownHandler (e: MouseEvent) {
@@ -38,9 +52,11 @@ export class Line extends Tool {
 
   mouseMoveHandler (e: MouseEvent) {
     if (this.mouseDown) {
+      this.currentX = e.pageX - (e.target as HTMLElement).offsetLeft;
+      this.currentY = e.pageY - (e.target as HTMLElement).offsetTop;
       this.draw(
-        e.pageX - (e.target as HTMLElement).offsetLeft,
-        e.pageY - (e.target as HTMLElement).offsetTop,
+        this.currentX,
+        this.currentY,
       );
     }
   }
@@ -58,6 +74,13 @@ export class Line extends Tool {
         this.ctx.stroke();
       };
     }
+  }
+
+  static staticDraw (ctx: CanvasRenderingContext2D, figure: TFigure) {
+    ctx.beginPath();
+    ctx.moveTo(figure.x || 0, figure.y || 0);
+    ctx.lineTo(figure.endX || 0, figure.endY || 0);
+    ctx.stroke();
   }
 
 }
