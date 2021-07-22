@@ -3,9 +3,6 @@ import { Tool } from '@Tools/tool';
 export class Eraser extends Tool {
 
   mouseDown = false;
-  startX = 0;
-  startY = 0;
-
   constructor (canvas: HTMLCanvasElement | null) {
     super(canvas);
     this.listen();
@@ -30,8 +27,6 @@ export class Eraser extends Tool {
       e.pageX - (e.target as HTMLElement).offsetLeft,
       e.pageY - (e.target as HTMLElement).offsetTop,
     );
-    this.startX = e.pageX - (e.target as HTMLElement).offsetLeft;
-    this.startY = e.pageY - (e.target as HTMLElement).offsetTop;
   }
 
   mouseMoveHandler (e: MouseEvent) {
