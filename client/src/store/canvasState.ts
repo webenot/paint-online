@@ -1,4 +1,5 @@
 import { makeAutoObservable } from 'mobx';
+import { WebSocketClient } from '@App/ws';
 
 class CanvasState {
 
@@ -7,8 +8,22 @@ class CanvasState {
   undoList: string[] = [];
   redoList: string[] = [];
 
+  username = '';
+
+  socketClient: WebSocketClient | null = null;
+  id: string;
+
   constructor () {
     makeAutoObservable<CanvasState>(this);
+  }
+
+  setSocketClient (client: WebSocketClient) {
+    this.socketClient = client;
+    this.id = client.id;
+  }
+
+  setUsername (name: string) {
+    this.username = name;
   }
 
   setCanvas (canvas: HTMLCanvasElement | null) {

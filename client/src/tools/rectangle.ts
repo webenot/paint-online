@@ -1,14 +1,17 @@
 import { Tool } from '@Tools/tool';
+import { TFigure, WebSocketClient } from '@App/ws';
 
 export class Rectangle extends Tool {
 
   mouseDown = false;
   startX = 0;
   startY = 0;
+  width = 0;
+  height = 0;
   saved: string | undefined;
 
-  constructor (canvas: HTMLCanvasElement | null) {
-    super(canvas);
+  constructor (canvas: HTMLCanvasElement | null, socketClient: WebSocketClient | null, id: string) {
+    super(canvas, socketClient, id);
     this.listen();
   }
 
@@ -22,6 +25,19 @@ export class Rectangle extends Tool {
 
   mouseUpHandler () {
     this.mouseDown = false;
+
+    this.socketClient?.send({
+      method: 'draw',
+      figure: {
+        type: 'rect',
+        x: this.startX,
+        y: this.startY,
+        width: this.width,
+        height: this.height,
+        stroke: this.ctx.strokeStyle,
+        fill: this.ctx.fillStyle,
+      },
+    });
   }
 
   mouseDownHandler (e: MouseEvent) {
@@ -40,13 +56,13 @@ export class Rectangle extends Tool {
     if (this.mouseDown) {
       const currentX = e.pageX - (e.target as HTMLElement).offsetLeft;
       const currentY = e.pageY - (e.target as HTMLElement).offsetTop;
-      const width = currentX - this.startX;
-      const height = currentY - this.startY;
+      this.width = currentX - this.startX;
+      this.height = currentY - this.startY;
       this.draw(
         this.startX,
         this.startY,
-        width,
-        height,
+        this.width,
+        this.height,
       );
     }
   }
@@ -62,6 +78,17 @@ export class Rectangle extends Tool {
       this.ctx.fill();
       this.ctx.stroke();
     };
+  }
+
+  static staticDraw (ctx: CanvasRenderingContext2D, figure: TFigure) {
+    ctx.save();
+    ctx.strokeStyle = figure.stroke || 'black';
+    ctx.fillStyle = figure.fill || 'black';
+    ctx.beginPath();
+    ctx.rect(figure.x || 0, figure.y || 0, figure.width || 0, figure.height || 0);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
   }
 
 }

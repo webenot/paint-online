@@ -3,7 +3,7 @@ import { TTool } from '@App/tools';
 
 class ToolState {
 
-  tool: any = null;
+  tool: TTool | null = null;
 
   constructor () {
     makeAutoObservable<ToolState>(this);
@@ -14,15 +14,21 @@ class ToolState {
   }
 
   setFillColor (color: string) {
-    this.tool.fillColor = color;
+    if (this.tool) {
+      this.tool.fillColor = color;
+    }
   }
 
   setStrokeColor (color: string) {
-    this.tool.strokeColor = color;
+    if (this.tool) {
+      this.tool.strokeColor = color;
+    }
   }
 
   setLineWidth (width: number) {
-    this.tool.lineWidth = width;
+    if (this.tool) {
+      this.tool.lineWidth = width;
+    }
   }
 }
 

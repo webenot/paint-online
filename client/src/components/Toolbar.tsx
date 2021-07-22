@@ -18,7 +18,7 @@ type TProps = {
 export const Toolbar: FC<TProps> = (): ReactElement => {
 
   const selectToolHandler = useCallback((toolClass: TToolClass) => () => {
-    toolState.setTool(new toolClass(canvasState.canvas));
+    toolState.setTool(new toolClass(canvasState.canvas, canvasState.socketClient, canvasState.id));
   }, []);
 
   const selectColorHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -31,6 +31,19 @@ export const Toolbar: FC<TProps> = (): ReactElement => {
 
   const redoHandler = useCallback(() => {
     canvasState.redo();
+  }, []);
+
+  const download = useCallback(() => {
+    const dataUrl = canvasState.canvas?.toDataURL();
+    console.log(dataUrl);
+    if (dataUrl) {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = canvasState.id + '.jpg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   }, []);
 
   return (
@@ -52,7 +65,10 @@ export const Toolbar: FC<TProps> = (): ReactElement => {
         className="toolbar__btn redo"
         onClick={redoHandler}
       />
-      <button className="toolbar__btn save" />
+      <button
+        className="toolbar__btn save"
+        onClick={download}
+      />
     </div>
   );
 };
