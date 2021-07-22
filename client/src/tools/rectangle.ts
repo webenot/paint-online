@@ -52,18 +52,16 @@ export class Rectangle extends Tool {
   }
 
   draw (x: number, y: number, w: number, h: number) {
-    if (this.saved) {
-      const image = new Image();
-      image.src = this.saved;
-      image.onload = () => {
-        this.ctx.clearRect(0, 0, this.canvas?.width || 0, this.canvas?.height || 0);
-        this.ctx.drawImage(image, 0, 0, this.canvas?.width || 0, this.canvas?.height || 0);
-        this.ctx.beginPath();
-        this.ctx.rect(x, y, w, h);
-        this.ctx.fill();
-        this.ctx.stroke();
-      };
-    }
+    const image = new Image();
+    image.src = this.saved || '';
+    image.onload = () => {
+      this.ctx.clearRect(0, 0, this.canvas?.width || 0, this.canvas?.height || 0);
+      this.ctx.drawImage(image, 0, 0, this.canvas?.width || 0, this.canvas?.height || 0);
+      this.ctx.beginPath();
+      this.ctx.rect(x, y, w, h);
+      this.ctx.fill();
+      this.ctx.stroke();
+    };
   }
 
 }
