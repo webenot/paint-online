@@ -25,6 +25,14 @@ export const Toolbar: FC<TProps> = (): ReactElement => {
     toolState.setFillColor(e.target.value);
   }, []);
 
+  const undoHandler = useCallback(() => {
+    canvasState.undo();
+  }, []);
+
+  const redoHandler = useCallback(() => {
+    canvasState.redo();
+  }, []);
+
   return (
     <div className="toolbar">
       <button className="toolbar__btn brush" onClick={selectToolHandler(Brush)} />
@@ -36,8 +44,14 @@ export const Toolbar: FC<TProps> = (): ReactElement => {
         type="color"
         onChange={selectColorHandler}
       />
-      <button className="toolbar__btn undo" />
-      <button className="toolbar__btn redo" />
+      <button
+        className="toolbar__btn undo"
+        onClick={undoHandler}
+      />
+      <button
+        className="toolbar__btn redo"
+        onClick={redoHandler}
+      />
       <button className="toolbar__btn save" />
     </div>
   );
