@@ -34,6 +34,8 @@ export class Rectangle extends Tool {
         y: this.startY,
         width: this.width,
         height: this.height,
+        stroke: this.ctx.strokeStyle,
+        fill: this.ctx.fillStyle,
       },
     });
   }
@@ -79,10 +81,14 @@ export class Rectangle extends Tool {
   }
 
   static staticDraw (ctx: CanvasRenderingContext2D, figure: TFigure) {
+    ctx.save();
+    ctx.strokeStyle = figure.stroke || 'black';
+    ctx.fillStyle = figure.fill || 'black';
     ctx.beginPath();
     ctx.rect(figure.x || 0, figure.y || 0, figure.width || 0, figure.height || 0);
     ctx.fill();
     ctx.stroke();
+    ctx.restore();
   }
 
 }

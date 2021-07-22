@@ -32,6 +32,8 @@ export class Circle extends Tool {
         x: this.startX,
         y: this.startY,
         radius: this.radius,
+        fill: this.ctx.fillStyle,
+        stroke: this.ctx.strokeStyle,
       },
     });
   }
@@ -78,9 +80,12 @@ export class Circle extends Tool {
   }
 
   static staticDraw (ctx: CanvasRenderingContext2D, figure: TFigure) {
+    ctx.save();
+    ctx.strokeStyle = figure.stroke || 'black';
     ctx.beginPath();
     ctx.arc(figure.x || 0, figure.y || 0, figure.radius || 0, 0, 2 * Math.PI);
     ctx.stroke();
+    ctx.restore();
   }
 
 }

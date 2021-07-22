@@ -77,10 +77,13 @@ export class Line extends Tool {
   }
 
   static staticDraw (ctx: CanvasRenderingContext2D, figure: TFigure) {
+    ctx.save();
+    ctx.strokeStyle = figure.stroke || 'black';
     ctx.beginPath();
     ctx.moveTo(figure.x || 0, figure.y || 0);
     ctx.lineTo(figure.endX || 0, figure.endY || 0);
     ctx.stroke();
+    ctx.restore();
   }
 
 }

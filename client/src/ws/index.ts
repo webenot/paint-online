@@ -14,6 +14,8 @@ export type TFigure = {
   height?: number;
   endX?: number;
   endY?: number;
+  fill?: string | CanvasGradient | CanvasPattern;
+  stroke?: string | CanvasGradient | CanvasPattern;
 }
 
 export type TWSMessage = {
@@ -90,7 +92,7 @@ export class WebSocketClient {
     if (ctx) {
       switch (figure.type) {
         case 'brush':
-          Brush.draw(ctx, figure.x || 0, figure.y || 0);
+          Brush.draw(ctx, figure);
           break;
         case 'erase':
           Eraser.draw(ctx, figure.x || 0, figure.y || 0);

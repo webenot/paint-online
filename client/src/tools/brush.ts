@@ -1,5 +1,5 @@
 import { Tool } from '@Tools/tool';
-import { WebSocketClient } from '@App/ws';
+import { TFigure, WebSocketClient } from '@App/ws';
 
 export class Brush extends Tool {
 
@@ -43,14 +43,19 @@ export class Brush extends Tool {
           type: 'brush',
           x: e.pageX - (e.target as HTMLElement).offsetLeft,
           y: e.pageY - (e.target as HTMLElement).offsetTop,
+          stroke: this.ctx.strokeStyle,
         },
       });
     }
   }
 
-  static draw (ctx: CanvasRenderingContext2D, x: number, y: number) {
-    ctx.lineTo(x, y);
+  static draw (ctx: CanvasRenderingContext2D, figure: TFigure) {
+    console.log({ figure });
+    ctx.save();
+    ctx.strokeStyle = figure.stroke || 'black';
+    ctx.lineTo(figure.x || 0, figure.y || 0);
     ctx.stroke();
+    ctx.restore();
   }
 
 }
