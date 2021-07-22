@@ -97,24 +97,15 @@ export class WebSocketClient {
           break;
         case 'rect':
           Rectangle.staticDraw(ctx, figure);
-          this.send({
-            method: 'draw',
-            figure: { type: 'finish' },
-          });
+          this.finishDrawing();
           break;
         case 'circle':
           Circle.staticDraw(ctx, figure);
-          this.send({
-            method: 'draw',
-            figure: { type: 'finish' },
-          });
+          this.finishDrawing();
           break;
         case 'line':
           Line.staticDraw(ctx, figure);
-          this.send({
-            method: 'draw',
-            figure: { type: 'finish' },
-          });
+          this.finishDrawing();
           break;
         case 'finish':
           ctx.beginPath();
@@ -128,5 +119,12 @@ export class WebSocketClient {
       id: this.id,
       username: this.username,
     }, msg)));
+  }
+
+  finishDrawing () {
+    this.send({
+      method: 'draw',
+      figure: { type: 'finish' },
+    });
   }
 }
