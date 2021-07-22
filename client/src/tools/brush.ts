@@ -50,7 +50,6 @@ export class Brush extends Tool {
   }
 
   static draw (ctx: CanvasRenderingContext2D, figure: TFigure) {
-    console.log({ figure });
     ctx.save();
     ctx.strokeStyle = figure.stroke || 'black';
     ctx.lineTo(figure.x || 0, figure.y || 0);

@@ -33,6 +33,18 @@ export const Toolbar: FC<TProps> = (): ReactElement => {
     canvasState.redo();
   }, []);
 
+  const download = useCallback(() => {
+    const dataUrl = canvasState.canvas?.toDataURL();
+    if (dataUrl) {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = canvasState.id + '.jpg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  }, []);
+
   return (
     <div className="toolbar">
       <button className="toolbar__btn brush" onClick={selectToolHandler(Brush)} />
@@ -52,7 +64,10 @@ export const Toolbar: FC<TProps> = (): ReactElement => {
         className="toolbar__btn redo"
         onClick={redoHandler}
       />
-      <button className="toolbar__btn save" />
+      <button
+        className="toolbar__btn save"
+        onClick={download}
+      />
     </div>
   );
 };
