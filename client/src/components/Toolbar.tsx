@@ -22,7 +22,7 @@ export const Toolbar: FC<TProps> = (): ReactElement => {
   }, []);
 
   const selectColorHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    toolState.setStrokeColor(e.target.value);
+    toolState.setFillColor(e.target.value);
   }, []);
 
   return (
