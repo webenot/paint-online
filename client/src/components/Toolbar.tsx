@@ -8,6 +8,7 @@ import toolState from '@Store/toolState';
 import { Rectangle } from '@Tools/rectangle';
 import { Circle } from '@Tools/circle';
 import { Eraser } from '@Tools/eraser';
+import { Line } from '@Tools/line';
 
 type TProps = {
   children?: never;
@@ -19,7 +20,7 @@ export const Toolbar: FC<TProps> = (): ReactElement => (
     <button className="toolbar__btn rect" onClick={() => toolState.setTool(new Rectangle(canvasState.canvas))} />
     <button className="toolbar__btn circle" onClick={() => toolState.setTool(new Circle(canvasState.canvas))} />
     <button className="toolbar__btn eraser" onClick={() => toolState.setTool(new Eraser(canvasState.canvas))} />
-    <button className="toolbar__btn line" />
+    <button className="toolbar__btn line" onClick={() => toolState.setTool(new Line(canvasState.canvas))} />
     <input type="color"/>
     <button className="toolbar__btn undo" />
     <button className="toolbar__btn redo" />
