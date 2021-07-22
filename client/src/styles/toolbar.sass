@@ -1,0 +1,59 @@
+@import "variables"
+
+.toolbar
+  height: $toolbar-height
+  background-color: white
+  display: flex
+  align-items: center
+  position: absolute
+  width: 100%
+  box-shadow: 0 4px 5px gray
+  padding: 0 1rem
+  &:not(.setting-bar)
+    z-index: 999
+  &__btn
+    width: $toolbar-btn-width
+    height: $toolbar-btn-height
+    border: 0
+    outline: none
+    cursor: pointer
+    background-size: contain
+    background-color: transparent
+    background-repeat: no-repeat
+    background-position: center center
+    &:not(:first-child)
+      margin-left: 1rem
+
+  input
+    margin-left: 1rem
+    cursor: pointer
+
+  .brush
+    background-image: url("../assets/img/brush.png")
+
+  .rect
+    background-color: black
+    border-radius: 2px
+
+  .circle
+    border-radius: 50%
+    border: 2px solid black
+
+  .eraser
+    background-image: url("../assets/img/eraser.png")
+
+  .line
+    background-image: url("../assets/img/line.png")
+
+  .undo
+    margin-left: auto
+    background-image: url("../assets/img/undo.png")
+
+  .redo
+    background-image: url("../assets/img/redo.png")
+
+  .save
+    background-image: url("../assets/img/save.png")
+
+.setting-bar
+  top: $toolbar-height
