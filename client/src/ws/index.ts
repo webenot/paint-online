@@ -84,6 +84,9 @@ export class WebSocketClient {
 
   onSocketClose () {
     console.log('ws closed');
+    if (this.username) {
+      this.connect();
+    }
   }
 
   drawHandler (msg: TWSMessage) {

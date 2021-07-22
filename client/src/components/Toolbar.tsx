@@ -35,6 +35,7 @@ export const Toolbar: FC<TProps> = (): ReactElement => {
 
   const download = useCallback(() => {
     const dataUrl = canvasState.canvas?.toDataURL();
+    console.log(dataUrl);
     if (dataUrl) {
       const a = document.createElement('a');
       a.href = dataUrl;
